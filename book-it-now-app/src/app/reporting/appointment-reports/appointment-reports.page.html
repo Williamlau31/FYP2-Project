@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Appointment Reports</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/reporting/dashboard"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding">
+    <!-- Date Range Selector -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Date Range</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Start Date</ion-label>
+          <ion-datetime
+            [(ngModel)]="startDate"
+            presentation="date"
+            (ionChange)="onDateRangeChange()"
+          ></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">End Date</ion-label>
+          <ion-datetime
+            [(ngModel)]="endDate"
+            presentation="date"
+            (ionChange)="onDateRangeChange()"
+          ></ion-datetime>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Summary Stats -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Summary Statistics</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <ion-icon name="calendar" color="primary"></ion-icon>
+            <div>
+              <h3>{{ getTotalAppointments() }}</h3>
+              <p>Total Appointments</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <ion-icon name="checkmark-circle" color="success"></ion-icon>
+            <div>
+              <h3>{{ getTotalCompleted() }}</h3>
+              <p>Completed</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <ion-icon name="close-circle" color="danger"></ion-icon>
+            <div>
+              <h3>{{ getTotalCancelled() }}</h3>
+              <p>Cancelled</p>
+            </div>
+          </div>
+          <div class="stat-item">
+            <ion-icon name="alert-circle" color="warning"></ion-icon>
+            <div>
+              <h3>{{ getTotalNoShow() }}</h3>
+              <p>No Show</p>
+            </div>
+          </div>
+        </div>
+        <div class="completion-rate">
+          <h3>Completion Rate: {{ getCompletionRate() }}%</h3>
+          <ion-progress-bar [value]="getCompletionRate() / 100" color="success"></ion-progress-bar>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Daily Reports -->
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Daily Breakdown</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngIf="loading" class="ion-text-center">
+          <ion-spinner></ion-spinner>
+        </div>
+        
+        <ion-list *ngIf="!loading">
+          <ion-item *ngFor="let report of reports">
+            <ion-label>
+              <h3>{{ report.date | date }}</h3>
+              <p>Total: {{ report.totalAppointments }} | Completed: {{ report.completedAppointments }} | Cancelled: {{ report.cancelledAppointments }} | No Show: {{ report.noShowAppointments }}</p>
+            </ion-label>
+            <ion-chip slot="end" [color]="report.completedAppointments / report.totalAppointments > 0.8 ? 'success' : 'warning'">
+              {{ Math.round((report.completedAppointments / report.totalAppointments) * 100) }}%
+            </ion-chip>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

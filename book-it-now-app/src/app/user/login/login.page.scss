@@ -1,0 +1,25 @@
+.quick-login-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-top: 1px solid var(--ion-color-light);
+  
+  h3 {
+    text-align: center;
+    color: var(--ion-color-medium);
+    margin-bottom: 1rem;
+  }
+  
+  ion-button {
+    margin-bottom: 0.5rem;
+  }
+}
+
+ion-card {
+  margin-bottom: 1rem;
+}
+
+ion-card-content p {
+  margin: 0.25rem 0;
+  font-family: monospace;
+  font-size: 0.9rem;
+}

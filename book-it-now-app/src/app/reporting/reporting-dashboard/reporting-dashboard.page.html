@@ -1,0 +1,98 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Reports Dashboard</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="loadDashboardStats()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="loading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <div *ngIf="!loading && stats">
+    <div class="stats-grid">
+      <ion-card>
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="people" color="primary"></ion-icon>
+            <div>
+              <h2>{{ stats.totalPatients }}</h2>
+              <p>Total Patients</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="calendar" color="secondary"></ion-icon>
+            <div>
+              <h2>{{ stats.totalAppointments }}</h2>
+              <p>Total Appointments</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="today" color="tertiary"></ion-icon>
+            <div>
+              <h2>{{ stats.todayAppointments }}</h2>
+              <p>Today's Appointments</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="time" color="warning"></ion-icon>
+            <div>
+              <h2>{{ stats.queueLength }}</h2>
+              <p>Queue Length</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <ion-card>
+        <ion-card-content>
+          <div class="stat-item">
+            <ion-icon name="medical" color="success"></ion-icon>
+            <div>
+              <h2>{{ stats.activeStaff }}</h2>
+              <p>Active Staff</p>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Quick Reports</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-button expand="full" routerLink="/reporting/appointments" fill="outline">
+          <ion-icon slot="start" name="bar-chart"></ion-icon>
+          Appointment Reports
+        </ion-button>
+        <ion-button expand="full" routerLink="/reporting/patients" fill="outline">
+          <ion-icon slot="start" name="analytics"></ion-icon>
+          Patient Reports
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

@@ -1,0 +1,20 @@
+ion-card {
+  margin: 16px;
+}
+
+ion-item {
+  --padding-start: 0;
+}
+
+ion-label h3 {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+ion-label p {
+  color: var(--ion-color-medium);
+}
+
+ion-chip {
+  margin-left: 0;
+}

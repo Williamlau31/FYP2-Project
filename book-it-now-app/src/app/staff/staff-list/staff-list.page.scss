@@ -1,0 +1,37 @@
+ion-segment {
+  margin: 16px;
+}
+
+.staff-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.chips {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+ion-chip {
+  font-size: 11px;
+  height: 20px;
+}
+
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+ion-label h2 {
+  font-weight: 600;
+  margin: 0;
+}
+
+ion-label p {
+  color: var(--ion-color-medium);
+  font-size: 14px;
+  margin: 2px 0;
+}

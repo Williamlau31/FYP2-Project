@@ -1,0 +1,22 @@
+ion-segment {
+  margin: 16px;
+}
+
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+}
+
+ion-label h2 {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+ion-label p {
+  color: var(--ion-color-medium);
+  font-size: 14px;
+}
+
+ion-chip {
+  font-size: 12px;
+}

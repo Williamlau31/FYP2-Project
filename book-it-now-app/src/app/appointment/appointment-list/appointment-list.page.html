@@ -1,0 +1,73 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Appointments</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="createAppointment()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-segment [(ngModel)]="selectedSegment">
+    <ion-segment-button value="all">
+      <ion-label>All</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="scheduled">
+      <ion-label>Scheduled</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="confirmed">
+      <ion-label>Confirmed</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="completed">
+      <ion-label>Completed</ion-label>
+    </ion-segment-button>
+  </ion-segment>
+
+  <ion-refresher slot="fixed" (ionRefresh)="loadAppointments()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="loading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <ion-list *ngIf="!loading">
+    <ion-item-sliding *ngFor="let appointment of filteredAppointments">
+      <ion-item (click)="viewAppointment(appointment.id!)">
+        <ion-label>
+          <h2>{{ appointment.patientName || 'Patient #' + appointment.patientId }}</h2>
+          <p>{{ appointment.appointmentDate | date }} at {{ appointment.appointmentTime }}</p>
+          <p>{{ appointment.type }} - {{ appointment.duration }} minutes</p>
+        </ion-label>
+        <ion-chip [color]="getStatusColor(appointment.status)" slot="end">
+          {{ appointment.status }}
+        </ion-chip>
+      </ion-item>
+      
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="editAppointment(appointment.id!)">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteAppointment(appointment)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <div *ngIf="!loading && filteredAppointments.length === 0" class="ion-text-center ion-padding">
+    <p>No appointments found</p>
+    <ion-button (click)="createAppointment()">Schedule First Appointment</ion-button>
+  </div>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="createAppointment()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
