@@ -29,7 +29,10 @@
       <ion-input type="password" name="password_confirmation" [(ngModel)]="registrationData.password_confirmation" required></ion-input>
     </ion-item>
 
-    <ion-button type="submit" expand="full" [disabled]="registerForm.invalid">Register</ion-button>
+    <ion-button type="submit" expand="full" [disabled]="registerForm.invalid || loading">
+      <ion-spinner *ngIf="loading" slot="start"></ion-spinner>
+      Register
+    </ion-button>
 
     <p class="ion-text-center">
       <a routerLink="/login">Already have an account? Login</a>

@@ -25,9 +25,9 @@
     <ion-item-sliding *ngFor="let patient of patients">
       <ion-item (click)="viewPatient(patient.id!)">
         <ion-label>
-          <h2>{{ patient.firstName }} {{ patient.lastName }}</h2>
+          <h2>{{ patient.first_name }} {{ patient.last_name }}</h2>
           <p>{{ patient.email }}</p>
-          <p>{{ patient.phone }}</p>
+          <p>{{ patient.phone_number }}</p>
         </ion-label>
       </ion-item>
       
@@ -53,3 +53,4 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
+

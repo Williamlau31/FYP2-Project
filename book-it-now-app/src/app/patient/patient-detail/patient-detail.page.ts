@@ -68,7 +68,7 @@ export class PatientDetailPage implements OnInit {
 
     const alert = await this.alertController.create({
       header: "Confirm Delete",
-      message: `Are you sure you want to delete ${this.patient.firstName} ${this.patient.lastName}?`,
+      message: `Are you sure you want to delete ${this.patient.first_name} ${this.patient.last_name}?`,
       buttons: [
         {
           text: "Cancel",

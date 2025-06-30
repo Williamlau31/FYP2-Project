@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
-import type { Observable } from "rxjs"
-import type { Appointment } from "../models/appointment.model"
-import type { ApiService } from "../../services/api.service"
+import { Observable } from "rxjs"
+import { ApiService } from "../../services/api.service"
+import { Appointment, AppointmentResponse, TimeSlot } from "../models/appointment.model"
 
 @Injectable({
   providedIn: "root",
@@ -9,19 +9,23 @@ import type { ApiService } from "../../services/api.service"
 export class AppointmentService {
   constructor(private apiService: ApiService) {}
 
-  getAppointments(filters?: any): Observable<any> {
-    return this.apiService.get("appointments", filters)
+  getAppointments(page = 1, status?: string): Observable<AppointmentResponse> {
+    const params: any = { page }
+    if (status && status !== "all") {
+      params.status = status
+    }
+    return this.apiService.get<AppointmentResponse>("appointments", params)
   }
 
   getAppointment(id: number): Observable<Appointment> {
     return this.apiService.get<Appointment>(`appointments/${id}`)
   }
 
-  createAppointment(appointment: Omit<Appointment, "id">): Observable<Appointment> {
+  createAppointment(appointment: Appointment): Observable<Appointment> {
     return this.apiService.post<Appointment>("appointments", appointment)
   }
 
-  updateAppointment(id: number, appointment: Partial<Appointment>): Observable<Appointment> {
+  updateAppointment(id: number, appointment: Appointment): Observable<Appointment> {
     return this.apiService.put<Appointment>(`appointments/${id}`, appointment)
   }
 
@@ -29,56 +33,27 @@ export class AppointmentService {
     return this.apiService.delete(`appointments/${id}`)
   }
 
+  checkAvailability(staffId: number, date: string): Observable<TimeSlot[]> {
+    return this.apiService.get<TimeSlot[]>("appointments/availability", {
+      staff_id: staffId,
+      date: date,
+    })
+  }
+
+  getUpcomingAppointments(): Observable<Appointment[]> {
+    return this.apiService.get<Appointment[]>("appointments/upcoming")
+  }
+
+  getTodayAppointments(): Observable<Appointment[]> {
+    return this.apiService.get<Appointment[]>("appointments/today")
+  }
+
   updateStatus(id: number, status: string): Observable<Appointment> {
     return this.apiService.put<Appointment>(`appointments/${id}/status`, { status })
   }
 
-  checkAvailability(date: string, time: string, staffId?: number): Observable<any> {
-    const params: any = { date, time }
-    if (staffId) params.staff_id = staffId
-
-    return this.apiService.get("appointments/check-availability", params)
-  }
-
-  getAppointmentsByDate(date: string): Observable<Appointment[]> {
-    return this.apiService.get<Appointment[]>("appointments/by-date", { date })
-  }
-
-  getAppointmentsByPatient(patientId: number): Observable<Appointment[]> {
-    return this.apiService.get<Appointment[]>(`appointments/patient/${patientId}`)
-  }
-
-  getAppointmentsByStaff(staffId: number): Observable<Appointment[]> {
-    return this.apiService.get<Appointment[]>(`appointments/staff/${staffId}`)
-  }
-
-  getTodaysAppointments(): Observable<Appointment[]> {
-    return this.apiService.get<Appointment[]>("appointments/today")
-  }
-
-  getUpcomingAppointments(days = 7): Observable<Appointment[]> {
-    return this.apiService.get<Appointment[]>("appointments/upcoming", { days })
-  }
-
-  rescheduleAppointment(id: number, newDate: string, newTime: string): Observable<Appointment> {
-    return this.apiService.put<Appointment>(`appointments/${id}/reschedule`, {
-      date: newDate,
-      time: newTime,
-    })
-  }
-
-  cancelAppointment(id: number, reason?: string): Observable<Appointment> {
-    return this.apiService.put<Appointment>(`appointments/${id}/cancel`, { reason })
-  }
-
-  confirmAppointment(id: number): Observable<Appointment> {
-    return this.apiService.put<Appointment>(`appointments/${id}/confirm`, {})
-  }
-
-  getConflicts(date: string, time: string, duration: number, excludeId?: number): Observable<any> {
-    const params: any = { date, time, duration }
-    if (excludeId) params.exclude_id = excludeId
-
-    return this.apiService.get("appointments/conflicts", params)
+  checkConflicts(appointment: Partial<Appointment>): Observable<any> {
+    return this.apiService.post("appointments/check-conflicts", appointment)
   }
 }
+

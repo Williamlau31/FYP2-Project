@@ -18,7 +18,7 @@
     <ion-card-content>
       <div class="welcome-section">
         <ion-avatar>
-          <img [src]="currentUser.avatar" alt="User Avatar">
+          <img [src]="currentUser.avatar || '/assets/default-avatar.png'" alt="User Avatar">
         </ion-avatar>
         <div>
           <h2>Welcome, {{ currentUser.name }}!</h2>
@@ -110,28 +110,28 @@
         <div class="stat-item">
           <ion-icon name="people" color="primary"></ion-icon>
           <div>
-            <h3>1,250</h3>
+            <h3>{{ stats?.totalPatients || 0 }}</h3>
             <p>Total Patients</p>
           </div>
         </div>
         <div class="stat-item">
           <ion-icon name="calendar" color="secondary"></ion-icon>
           <div>
-            <h3>28</h3>
+            <h3>{{ stats?.todayAppointments || 0 }}</h3>
             <p>Today's Appointments</p>
           </div>
         </div>
         <div class="stat-item">
           <ion-icon name="time" color="warning"></ion-icon>
           <div>
-            <h3>5</h3>
+            <h3>{{ stats?.queueLength || 0 }}</h3>
             <p>Queue Length</p>
           </div>
         </div>
         <div class="stat-item">
           <ion-icon name="medical" color="success"></ion-icon>
           <div>
-            <h3>12</h3>
+            <h3>{{ stats?.activeStaff || 0 }}</h3>
             <p>Active Staff</p>
           </div>
         </div>
@@ -201,5 +201,3 @@
     </ion-card-content>
   </ion-card>
 </ion-content>
-
-

@@ -1,0 +1,118 @@
+ion-content {
+  --padding-top: 1rem;
+}
+
+.profile-header {
+  text-align: center;
+  padding: 2rem 1rem;
+  
+  .avatar-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+    
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--ion-color-primary);
+    }
+    
+    .avatar-placeholder {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: var(--ion-color-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+      border: 3px solid var(--ion-color-primary);
+    }
+  }
+  
+  .user-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin: 0.5rem 0;
+  }
+  
+  .user-role {
+    color: var(--ion-color-medium);
+    font-size: 1rem;
+    text-transform: capitalize;
+  }
+}
+
+ion-card {
+  margin: 1rem;
+  --border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+  ion-card-header {
+    padding-bottom: 0;
+    
+    ion-card-title {
+      color: var(--ion-color-primary);
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  }
+  
+  ion-card-content {
+    padding-top: 1rem;
+    
+    ion-item {
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      --border-style: none;
+      --background: transparent;
+      
+      ion-label {
+        font-weight: 600;
+        color: var(--ion-color-medium);
+        margin-right: 1rem;
+      }
+      
+      ion-text {
+        color: var(--ion-color-dark);
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.action-buttons {
+  padding: 1rem;
+  
+  ion-button {
+    --border-radius: 8px;
+    height: 48px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  
+  ion-spinner {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+// Responsive design
+@media (min-width: 768px) {
+  .profile-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}

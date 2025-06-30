@@ -27,6 +27,10 @@
         <ion-label>Email:</ion-label>
         <ion-text>{{ user?.email }}</ion-text>
       </ion-item>
+      <ion-item>
+        <ion-label>Role:</ion-label>
+        <ion-text>{{ user?.role | titlecase }}</ion-text>
+      </ion-item>
     </ion-card-content>
   </ion-card>
   <ion-button (click)="goToEditProfile()" expand="full">Edit Profile</ion-button>

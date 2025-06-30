@@ -2,10 +2,9 @@ import { Component, type OnInit } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
 import { IonicModule } from "@ionic/angular"
-import { Router } from "@angular/router"
-import { AlertController, ToastController } from "@ionic/angular"
+import type { Router } from "@angular/router"
+import type { QueueService } from "../services/queue.service"
 import type { QueueItem } from "../models/queue.model"
-import { QueueService } from "../services/queue.service"
 
 @Component({
   selector: "app-queue-list",
@@ -21,83 +20,39 @@ export class QueueListPage implements OnInit {
   constructor(
     private queueService: QueueService,
     private router: Router,
-    private alertController: AlertController,
-    private toastController: ToastController,
   ) {}
 
   ngOnInit() {
     this.loadQueue()
   }
 
-  ionViewWillEnter() {
-    this.loadQueue()
-  }
-
   loadQueue() {
     this.loading = true
-    this.queueService.getQueueItems().subscribe({
-      next: (items) => {
-        this.queueItems = items.sort((a, b) => a.queueNumber - b.queueNumber)
+    this.queueService.getCurrentQueue().subscribe({
+      next: (items: QueueItem[]) => {
+        this.queueItems = items.sort((a: QueueItem, b: QueueItem) => a.queue_number - b.queue_number)
         this.loading = false
       },
       error: (error) => {
         console.error("Error loading queue:", error)
         this.loading = false
-        this.presentToast("Error loading queue", "danger")
       },
     })
   }
 
-  async presentToast(message: string, color = "success") {
-    const toast = await this.toastController.create({
-      message,
-      duration: 2000,
-      color,
+  callNext() {
+    this.queueService.callNext().subscribe({
+      next: () => {
+        this.loadQueue()
+      },
+      error: (error) => {
+        console.error("Error calling next:", error)
+      },
     })
-    toast.present()
   }
 
   viewQueueItem(id: number) {
     this.router.navigate(["/queue/detail", id])
-  }
-
-  editQueueItem(id: number) {
-    this.router.navigate(["/queue/edit", id])
-  }
-
-  async removeFromQueue(item: QueueItem) {
-    const alert = await this.alertController.create({
-      header: "Confirm Remove",
-      message: `Remove ${item.patientName} from queue?`,
-      buttons: [
-        {
-          text: "Cancel",
-          role: "cancel",
-        },
-        {
-          text: "Remove",
-          handler: () => {
-            if (item.id) {
-              this.queueService.removeFromQueue(item.id).subscribe({
-                next: () => {
-                  this.presentToast("Removed from queue successfully")
-                  this.loadQueue()
-                },
-                error: (error) => {
-                  console.error("Error removing from queue:", error)
-                  this.presentToast("Error removing from queue", "danger")
-                },
-              })
-            }
-          },
-        },
-      ],
-    })
-    await alert.present()
-  }
-
-  addToQueue() {
-    this.router.navigate(["/queue/create"])
   }
 
   getPriorityColor(priority: string): string {
@@ -134,4 +89,3 @@ export class QueueListPage implements OnInit {
 }
 
 export default QueueListPage
-

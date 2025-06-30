@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
-import type { Observable } from "rxjs"
-import type { QueueItem } from "../models/queue.model"
-import type { ApiService } from "../../services/api.service"
+import { Observable } from "rxjs"
+import { ApiService } from "../../services/api.service"
+import { QueueItem, QueueResponse, QueueStats } from "../models/queue.model"
 
 @Injectable({
   providedIn: "root",
@@ -9,15 +9,19 @@ import type { ApiService } from "../../services/api.service"
 export class QueueService {
   constructor(private apiService: ApiService) {}
 
-  getQueueItems(filters?: any): Observable<any> {
-    return this.apiService.get("queue", filters)
+  getQueue(page = 1, status?: string): Observable<QueueResponse> {
+    const params: any = { page }
+    if (status && status !== "all") {
+      params.status = status
+    }
+    return this.apiService.get<QueueResponse>("queue", params)
   }
 
   getQueueItem(id: number): Observable<QueueItem> {
     return this.apiService.get<QueueItem>(`queue/${id}`)
   }
 
-  addToQueue(queueItem: Omit<QueueItem, "id" | "queue_number" | "estimated_wait_time">): Observable<QueueItem> {
+  addToQueue(queueItem: Partial<QueueItem>): Observable<QueueItem> {
     return this.apiService.post<QueueItem>("queue", queueItem)
   }
 
@@ -29,74 +33,28 @@ export class QueueService {
     return this.apiService.delete(`queue/${id}`)
   }
 
-  updateStatus(
-    id: number,
-    status: "waiting" | "in_progress" | "completed" | "cancelled" | "no_show",
-  ): Observable<QueueItem> {
+  callNext(): Observable<QueueItem> {
+    return this.apiService.post<QueueItem>("queue/call-next", {})
+  }
+
+  updateStatus(id: number, status: string): Observable<QueueItem> {
     return this.apiService.put<QueueItem>(`queue/${id}/status`, { status })
   }
 
-  callNext(department?: string): Observable<QueueItem | null> {
-    const params: any = {}
-    if (department) params.department = department
-
-    return this.apiService.post<QueueItem | null>("queue/call-next", params)
+  getQueueStats(): Observable<QueueStats> {
+    return this.apiService.get<QueueStats>("queue/stats")
   }
 
-  getCurrentQueue(department?: string): Observable<QueueItem[]> {
-    const params: any = {}
-    if (department) params.department = department
-
-    return this.apiService.get<QueueItem[]>("queue/current", params)
+  getCurrentQueue(): Observable<QueueItem[]> {
+    return this.apiService.get<QueueItem[]>("queue/current")
   }
 
-  getQueueByDepartment(department: string): Observable<QueueItem[]> {
-    return this.apiService.get<QueueItem[]>(`queue/department/${department}`)
+  getWaitTime(queueNumber: number): Observable<{ estimated_wait_time: number }> {
+    return this.apiService.get<{ estimated_wait_time: number }>(`queue/wait-time/${queueNumber}`)
   }
 
-  getQueueByPriority(priority: "low" | "normal" | "high" | "urgent"): Observable<QueueItem[]> {
-    return this.apiService.get<QueueItem[]>("queue/by-priority", { priority })
-  }
-
-  getPatientPosition(patientId: number): Observable<any> {
-    return this.apiService.get(`queue/patient/${patientId}/position`)
-  }
-
-  getEstimatedWaitTime(patientId: number): Observable<any> {
-    return this.apiService.get(`queue/patient/${patientId}/wait-time`)
-  }
-
-  getQueueStatistics(date?: string): Observable<any> {
-    const params: any = {}
-    if (date) params.date = date
-
-    return this.apiService.get("queue/statistics", params)
-  }
-
-  transferToQueue(id: number, newDepartment: string): Observable<QueueItem> {
-    return this.apiService.put<QueueItem>(`queue/${id}/transfer`, { department: newDepartment })
-  }
-
-  updatePriority(id: number, priority: "low" | "normal" | "high" | "urgent"): Observable<QueueItem> {
-    return this.apiService.put<QueueItem>(`queue/${id}/priority`, { priority })
-  }
-
-  getQueueHistory(patientId: number): Observable<QueueItem[]> {
-    return this.apiService.get<QueueItem[]>(`queue/patient/${patientId}/history`)
-  }
-
-  pauseQueue(id: number, reason?: string): Observable<QueueItem> {
-    return this.apiService.put<QueueItem>(`queue/${id}/pause`, { reason })
-  }
-
-  resumeQueue(id: number): Observable<QueueItem> {
-    return this.apiService.put<QueueItem>(`queue/${id}/resume`, {})
-  }
-
-  getAverageWaitTime(department?: string): Observable<any> {
-    const params: any = {}
-    if (department) params.department = department
-
-    return this.apiService.get("queue/average-wait-time", params)
+  resetQueue(): Observable<any> {
+    return this.apiService.post("queue/reset", {})
   }
 }
+

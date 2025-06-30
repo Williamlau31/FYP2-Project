@@ -14,8 +14,8 @@
         <ion-label position="floating">First Name *</ion-label>
         <ion-input
           type="text"
-          name="firstName"
-          [(ngModel)]="patient.firstName"
+          name="first_name"
+          [(ngModel)]="patient.first_name"
           required
         ></ion-input>
       </ion-item>
@@ -24,8 +24,8 @@
         <ion-label position="floating">Last Name *</ion-label>
         <ion-input
           type="text"
-          name="lastName"
-          [(ngModel)]="patient.lastName"
+          name="last_name"
+          [(ngModel)]="patient.last_name"
           required
         ></ion-input>
       </ion-item>
@@ -44,8 +44,8 @@
         <ion-label position="floating">Phone *</ion-label>
         <ion-input
           type="tel"
-          name="phone"
-          [(ngModel)]="patient.phone"
+          name="phone_number"
+          [(ngModel)]="patient.phone_number"
           required
         ></ion-input>
       </ion-item>
@@ -53,8 +53,8 @@
       <ion-item>
         <ion-label position="floating">Date of Birth *</ion-label>
         <ion-datetime
-          name="dateOfBirth"
-          [(ngModel)]="patient.dateOfBirth"
+          name="date_of_birth"
+          [(ngModel)]="patient.date_of_birth"
           presentation="date"
           required
         ></ion-datetime>
@@ -73,8 +73,8 @@
         <ion-label position="floating">Emergency Contact *</ion-label>
         <ion-input
           type="text"
-          name="emergencyContact"
-          [(ngModel)]="patient.emergencyContact"
+          name="emergency_contact"
+          [(ngModel)]="patient.emergency_contact"
           required
         ></ion-input>
       </ion-item>
@@ -83,8 +83,8 @@
         <ion-label position="floating">Emergency Phone *</ion-label>
         <ion-input
           type="tel"
-          name="emergencyPhone"
-          [(ngModel)]="patient.emergencyPhone"
+          name="emergency_phone"
+          [(ngModel)]="patient.emergency_phone"
           required
         ></ion-input>
       </ion-item>
@@ -92,8 +92,8 @@
       <ion-item>
         <ion-label position="floating">Medical History</ion-label>
         <ion-textarea
-          name="medicalHistory"
-          [(ngModel)]="patient.medicalHistory"
+          name="medical_history"
+          [(ngModel)]="patient.medical_history"
         ></ion-textarea>
       </ion-item>
 

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
-import type { Observable } from "rxjs"
-import type { Patient } from "../models/patient.model"
-import type { ApiService } from "../../services/api.service"
+import { Observable } from "rxjs"
+import { ApiService } from "../../services/api.service"
+import { Patient, PatientResponse } from "../models/patient.model"
 
 @Injectable({
   providedIn: "root",
@@ -9,24 +9,23 @@ import type { ApiService } from "../../services/api.service"
 export class PatientService {
   constructor(private apiService: ApiService) {}
 
-  getPatients(search?: string, page?: number, perPage?: number): Observable<any> {
-    const params: any = {}
-    if (search) params.search = search
-    if (page) params.page = page
-    if (perPage) params.per_page = perPage
-
-    return this.apiService.get("patients", params)
+  getPatients(page = 1, search?: string): Observable<PatientResponse> {
+    const params: any = { page }
+    if (search) {
+      params.search = search
+    }
+    return this.apiService.get<PatientResponse>("patients", params)
   }
 
   getPatient(id: number): Observable<Patient> {
     return this.apiService.get<Patient>(`patients/${id}`)
   }
 
-  createPatient(patient: Omit<Patient, "id">): Observable<Patient> {
+  createPatient(patient: Patient): Observable<Patient> {
     return this.apiService.post<Patient>("patients", patient)
   }
 
-  updatePatient(id: number, patient: Partial<Patient>): Observable<Patient> {
+  updatePatient(id: number, patient: Patient): Observable<Patient> {
     return this.apiService.put<Patient>(`patients/${id}`, patient)
   }
 
@@ -38,15 +37,11 @@ export class PatientService {
     return this.apiService.get<Patient[]>("patients/search", { q: query })
   }
 
-  getPatientHistory(id: number): Observable<any> {
-    return this.apiService.get(`patients/${id}/history`)
+  getPatientHistory(id: number): Observable<any[]> {
+    return this.apiService.get<any[]>(`patients/${id}/history`)
   }
 
-  getPatientAppointments(id: number): Observable<any> {
-    return this.apiService.get(`patients/${id}/appointments`)
-  }
-
-  exportPatients(format: "csv" | "pdf" = "csv"): Observable<Blob> {
-    return this.apiService.get<Blob>(`patients/export`, { format })
+  getPatientAppointments(id: number): Observable<any[]> {
+    return this.apiService.get<any[]>(`patients/${id}/appointments`)
   }
 }

@@ -78,11 +78,11 @@
         <ion-list *ngIf="!loading">
           <ion-item *ngFor="let report of reports">
             <ion-label>
-              <h3>{{ report.month }}</h3>
-              <p>New: {{ report.newPatients }} | Returning: {{ report.returningPatients }} | Total Visits: {{ report.totalVisits }}</p>
+              <h3>{{ report.period }}</h3>
+              <p>New: {{ report.new_patients }} | Returning: {{ report.returning_patients }} | Total Visits: {{ report.total_visits }}</p>
             </ion-label>
-            <ion-chip slot="end" [color]="report.newPatients > 40 ? 'success' : 'primary'">
-              {{ Math.round((report.newPatients / report.totalVisits) * 100) }}% New
+            <ion-chip slot="end" [color]="report.new_patients > 40 ? 'success' : 'primary'">
+              {{ Math.round((report.new_patients / report.total_visits) * 100) }}% New
             </ion-chip>
           </ion-item>
         </ion-list>

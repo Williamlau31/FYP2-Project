@@ -91,10 +91,10 @@
           <ion-item *ngFor="let report of reports">
             <ion-label>
               <h3>{{ report.date | date }}</h3>
-              <p>Total: {{ report.totalAppointments }} | Completed: {{ report.completedAppointments }} | Cancelled: {{ report.cancelledAppointments }} | No Show: {{ report.noShowAppointments }}</p>
+              <p>Total: {{ report.total_appointments }} | Completed: {{ report.completed_appointments }} | Cancelled: {{ report.cancelled_appointments }} | No Show: {{ report.no_show_appointments }}</p>
             </ion-label>
-            <ion-chip slot="end" [color]="report.completedAppointments / report.totalAppointments > 0.8 ? 'success' : 'warning'">
-              {{ Math.round((report.completedAppointments / report.totalAppointments) * 100) }}%
+            <ion-chip slot="end" [color]="report.completed_appointments / report.total_appointments > 0.8 ? 'success' : 'warning'">
+              {{ Math.round((report.completed_appointments / report.total_appointments) * 100) }}%
             </ion-chip>
           </ion-item>
         </ion-list>

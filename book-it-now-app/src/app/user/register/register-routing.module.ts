@@ -1,10 +1,11 @@
 import { NgModule } from "@angular/core"
 import { Routes, RouterModule } from "@angular/router"
+import RegisterPage from "./register.page"
 
 const routes: Routes = [
   {
     path: "",
-    loadComponent: () => import("./register.page").then((m) => m.default),
+    component: RegisterPage,
   },
 ]
 
@@ -13,4 +14,3 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class RegisterPageRoutingModule {}
-

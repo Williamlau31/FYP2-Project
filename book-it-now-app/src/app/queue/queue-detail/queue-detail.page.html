@@ -20,8 +20,8 @@
   <div *ngIf="!loading && queueItem">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Queue #{{ queueItem.queueNumber }}</ion-card-title>
-        <ion-card-subtitle>{{ queueItem.patientName }}</ion-card-subtitle>
+        <ion-card-title>Queue #{{ queueItem.queue_number }}</ion-card-title>
+        <ion-card-subtitle>{{ queueItem.patient_name || 'Patient #' + queueItem.patient_id }}</ion-card-subtitle>
       </ion-card-header>
       <ion-card-content>
         <div class="status-chips">
@@ -39,37 +39,37 @@
           <ion-item>
             <ion-label>
               <h3>Patient ID</h3>
-              <p>{{ queueItem.patientId }}</p>
+              <p>{{ queueItem.patient_id }}</p>
             </ion-label>
           </ion-item>
-          <ion-item *ngIf="queueItem.appointmentId">
+          <ion-item *ngIf="queueItem.appointment_id">
             <ion-label>
               <h3>Appointment ID</h3>
-              <p>{{ queueItem.appointmentId }}</p>
+              <p>{{ queueItem.appointment_id }}</p>
             </ion-label>
           </ion-item>
           <ion-item>
             <ion-label>
               <h3>Checked In</h3>
-              <p>{{ queueItem.checkedInAt | date:'medium' }}</p>
+              <p>{{ queueItem.checked_in_at | date:'medium' }}</p>
             </ion-label>
           </ion-item>
-          <ion-item *ngIf="queueItem.calledAt">
+          <ion-item *ngIf="queueItem.called_at">
             <ion-label>
               <h3>Called At</h3>
-              <p>{{ queueItem.calledAt | date:'medium' }}</p>
+              <p>{{ queueItem.called_at | date:'medium' }}</p>
             </ion-label>
           </ion-item>
-          <ion-item *ngIf="queueItem.completedAt">
+          <ion-item *ngIf="queueItem.completed_at">
             <ion-label>
               <h3>Completed At</h3>
-              <p>{{ queueItem.completedAt | date:'medium' }}</p>
+              <p>{{ queueItem.completed_at | date:'medium' }}</p>
             </ion-label>
           </ion-item>
-          <ion-item *ngIf="queueItem.estimatedWaitTime">
+          <ion-item *ngIf="queueItem.estimated_wait_time">
             <ion-label>
               <h3>Estimated Wait Time</h3>
-              <p>{{ queueItem.estimatedWaitTime }} minutes</p>
+              <p>{{ queueItem.estimated_wait_time }} minutes</p>
             </ion-label>
           </ion-item>
           <ion-item *ngIf="queueItem.notes">

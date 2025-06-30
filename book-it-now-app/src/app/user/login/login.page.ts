@@ -1,34 +1,27 @@
-import { Component, type OnInit } from "@angular/core"
-import { Router, RouterModule } from "@angular/router"
-import { CommonModule } from "@angular/common"
-import { FormsModule } from "@angular/forms"
-import { IonicModule } from "@ionic/angular"
-import { AuthService } from "../../auth.service"
-import { ToastController } from "@ionic/angular"
+import { Component } from "@angular/core"
+import type { Router } from "@angular/router"
+import type { ToastController } from "@ionic/angular"
+import type { AuthService, LoginCredentials } from "../../auth.service"
 
 @Component({
   selector: "app-login",
   templateUrl: "./login.page.html",
   styleUrls: ["./login.page.scss"],
-  standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterModule],
 })
-export class LoginPage implements OnInit {
-  credentials = {
+export default class LoginPage {
+  credentials: LoginCredentials = {
     email: "",
     password: "",
   }
   loading = false
 
   constructor(
-    private router: Router,
     private authService: AuthService,
+    private router: Router,
     private toastController: ToastController,
   ) {}
 
-  ngOnInit() {}
-
-  async presentToast(message: string, color = "danger") {
+  async presentToast(message: string, color = "success") {
     const toast = await this.toastController.create({
       message,
       duration: 2000,
@@ -38,35 +31,42 @@ export class LoginPage implements OnInit {
   }
 
   onSubmit() {
-    this.loading = true
+    if (!this.credentials.email || !this.credentials.password) {
+      this.presentToast("Please fill in all fields", "danger")
+      return
+    }
 
-    this.authService.login(this.credentials.email, this.credentials.password).subscribe({
-      next: (user) => {
+    this.loading = true
+    this.authService.login(this.credentials).subscribe({
+      next: (response) => {
         this.loading = false
-        this.presentToast(`Welcome ${user.name}!`, "success")
+        this.presentToast(`Welcome ${response.user.name}!`, "success")
         this.router.navigate(["/home"])
       },
       error: (error) => {
         this.loading = false
-        this.presentToast(error.message || "Login failed")
+        console.error("Login error:", error)
+
+        if (error.status === 401) {
+          this.presentToast("Invalid email or password", "danger")
+        } else if (error.status === 422) {
+          this.presentToast("Please check your input", "danger")
+        } else {
+          this.presentToast("Login failed. Please try again.", "danger")
+        }
       },
     })
   }
 
-  // Quick login methods for testing
   loginAsAdmin() {
-    this.authService.loginAsAdmin()
-    this.presentToast("Logged in as Admin!", "success")
-    this.router.navigate(["/home"])
+    this.loading = true
+    this.credentials = { email: "admin@bookitnow.com", password: "admin123" }
+    this.onSubmit()
   }
 
   loginAsUser() {
-    this.authService.loginAsUser()
-    this.presentToast("Logged in as User!", "success")
-    this.router.navigate(["/home"])
+    this.loading = true
+    this.credentials = { email: "user@bookitnow.com", password: "user123" }
+    this.onSubmit()
   }
 }
-
-export default LoginPage
-
-

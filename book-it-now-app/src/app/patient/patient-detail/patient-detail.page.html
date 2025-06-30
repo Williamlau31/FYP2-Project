@@ -20,7 +20,7 @@
   <div *ngIf="!loading && patient">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>{{ patient.firstName }} {{ patient.lastName }}</ion-card-title>
+        <ion-card-title>{{ patient.first_name }} {{ patient.last_name }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
         <ion-list>
@@ -33,13 +33,13 @@
           <ion-item>
             <ion-label>
               <h3>Phone</h3>
-              <p>{{ patient.phone }}</p>
+              <p>{{ patient.phone_number }}</p>
             </ion-label>
           </ion-item>
           <ion-item>
             <ion-label>
               <h3>Date of Birth</h3>
-              <p>{{ patient.dateOfBirth | date }}</p>
+              <p>{{ patient.date_of_birth | date }}</p>
             </ion-label>
           </ion-item>
           <ion-item>
@@ -51,19 +51,19 @@
           <ion-item>
             <ion-label>
               <h3>Emergency Contact</h3>
-              <p>{{ patient.emergencyContact }}</p>
+              <p>{{ patient.emergency_contact }}</p>
             </ion-label>
           </ion-item>
           <ion-item>
             <ion-label>
               <h3>Emergency Phone</h3>
-              <p>{{ patient.emergencyPhone }}</p>
+              <p>{{ patient.emergency_phone }}</p>
             </ion-label>
           </ion-item>
-          <ion-item *ngIf="patient.medicalHistory">
+          <ion-item *ngIf="patient.medical_history">
             <ion-label>
               <h3>Medical History</h3>
-              <p>{{ patient.medicalHistory }}</p>
+              <p>{{ patient.medical_history }}</p>
             </ion-label>
           </ion-item>
           <ion-item *ngIf="patient.allergies">

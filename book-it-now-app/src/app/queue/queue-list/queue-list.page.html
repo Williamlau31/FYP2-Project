@@ -26,7 +26,7 @@
       <ion-item (click)="viewQueueItem(item.id!)">
         <ion-label>
           <div class="queue-header">
-            <h2>#{{ item.queueNumber }} - {{ item.patientName }}</h2>
+            <h2>#{{ item.queue_number }} - {{ item.patient_name || 'Patient #' + item.patient_id }}</h2>
             <div class="chips">
               <ion-chip [color]="getPriorityColor(item.priority)" size="small">
                 {{ item.priority }}
@@ -36,8 +36,8 @@
               </ion-chip>
             </div>
           </div>
-          <p>Checked in: {{ item.checkedInAt | date:'short' }}</p>
-          <p *ngIf="item.estimatedWaitTime">Est. wait: {{ item.estimatedWaitTime }} minutes</p>
+          <p>Checked in: {{ item.checked_in_at | date:'short' }}</p>
+          <p *ngIf="item.estimated_wait_time">Est. wait: {{ item.estimated_wait_time }} minutes</p>
         </ion-label>
       </ion-item>
       
@@ -63,3 +63,4 @@
     </ion-fab-button>
   </ion-fab>
 </ion-content>
+

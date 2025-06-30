@@ -41,7 +41,7 @@
       <ion-item (click)="viewStaff(member.id!)">
         <ion-label>
           <div class="staff-header">
-            <h2>{{ member.firstName }} {{ member.lastName }}</h2>
+            <h2>{{ member.first_name }} {{ member.last_name }}</h2>
             <div class="chips">
               <ion-chip [color]="getRoleColor(member.role)" size="small">
                 {{ member.role | titlecase }}

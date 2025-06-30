@@ -14,8 +14,8 @@
         <ion-label position="floating">First Name *</ion-label>
         <ion-input
           type="text"
-          name="firstName"
-          [(ngModel)]="staff.firstName"
+          name="first_name"
+          [(ngModel)]="staff.first_name"
           required
         ></ion-input>
       </ion-item>
@@ -24,8 +24,8 @@
         <ion-label position="floating">Last Name *</ion-label>
         <ion-input
           type="text"
-          name="lastName"
-          [(ngModel)]="staff.lastName"
+          name="last_name"
+          [(ngModel)]="staff.last_name"
           required
         ></ion-input>
       </ion-item>
@@ -44,8 +44,8 @@
         <ion-label position="floating">Phone *</ion-label>
         <ion-input
           type="tel"
-          name="phone"
-          [(ngModel)]="staff.phone"
+          name="phone_number"
+          [(ngModel)]="staff.phone_number"
           required
         ></ion-input>
       </ion-item>
@@ -81,16 +81,16 @@
         <ion-label position="floating">License Number</ion-label>
         <ion-input
           type="text"
-          name="licenseNumber"
-          [(ngModel)]="staff.licenseNumber"
+          name="license_number"
+          [(ngModel)]="staff.license_number"
         ></ion-input>
       </ion-item>
 
       <ion-item>
         <ion-label position="floating">Hire Date *</ion-label>
         <ion-datetime
-          name="hireDate"
-          [(ngModel)]="staff.hireDate"
+          name="hire_date"
+          [(ngModel)]="staff.hire_date"
           presentation="date"
           required
         ></ion-datetime>
@@ -109,8 +109,8 @@
         <ion-label position="floating">Working Hours</ion-label>
         <ion-input
           type="text"
-          name="workingHours"
-          [(ngModel)]="staff.workingHours"
+          name="working_hours"
+          [(ngModel)]="staff.working_hours"
           placeholder="e.g., 9:00 AM - 5:00 PM"
         ></ion-input>
       </ion-item>

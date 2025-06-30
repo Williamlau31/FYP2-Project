@@ -1,3 +1,49 @@
-<p>
-  user-profile works!
-</p>
+<div class="user-profile-component">
+  <div class="profile-summary" *ngIf="user">
+    <div class="avatar-section">
+      <img 
+        *ngIf="user.avatar" 
+        [src]="user.avatar" 
+        [alt]="user.name + ' profile picture'"
+        [title]="user.name + ' profile picture'"
+        class="avatar"
+        (error)="onAvatarError($event)"
+      >
+      <div *ngIf="!user.avatar" class="avatar-placeholder" [title]="user.name + ' profile initials'">
+        {{ getUserInitials() }}
+      </div>
+    </div>
+    
+    <div class="user-info">
+      <h3 class="user-name">{{ user.name }}</h3>
+      <p class="user-email">{{ user.email }}</p>
+      <span class="user-role" [class]="'role-' + user.role">
+        {{ user.role | titlecase }}
+      </span>
+    </div>
+  </div>
+  
+  <div class="profile-actions">
+    <ion-button 
+      fill="outline" 
+      size="small" 
+      (click)="onEditProfile()"
+      aria-label="Edit user profile"
+    >
+      <ion-icon slot="start" name="create-outline" aria-hidden="true"></ion-icon>
+      Edit Profile
+    </ion-button>
+    
+    <ion-button 
+      fill="clear" 
+      size="small" 
+      color="danger"
+      (click)="onLogout()"
+      aria-label="Logout from account"
+    >
+      <ion-icon slot="start" name="log-out-outline" aria-hidden="true"></ion-icon>
+      Logout
+    </ion-button>
+  </div>
+</div>
+

@@ -4,7 +4,7 @@ import { FormsModule } from "@angular/forms"
 import { IonicModule } from "@ionic/angular"
 import { ActivatedRoute, Router } from "@angular/router"
 import { ToastController } from "@ionic/angular"
-import type { Appointment } from "../models/appointment.model"
+import { Appointment } from "../models/appointment.model"
 import { AppointmentService } from "../services/appointment.service"
 
 @Component({
@@ -16,10 +16,10 @@ import { AppointmentService } from "../services/appointment.service"
 })
 export class AppointmentFormPage implements OnInit {
   appointment: Appointment = {
-    patientId: 1,
-    staffId: 1,
-    appointmentDate: "",
-    appointmentTime: "",
+    patient_id: 1,
+    staff_id: 1,
+    appointment_date: "",
+    appointment_time: "",
     duration: 30,
     type: "",
     status: "scheduled",

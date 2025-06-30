@@ -1,10 +1,11 @@
 import { NgModule } from "@angular/core"
-import { Routes, RouterModule } from "@angular/router"
+import { type Routes, RouterModule } from "@angular/router"
+import { UserProfilePage } from "./user-profile.page"
 
 const routes: Routes = [
   {
     path: "",
-    loadComponent: () => import("./user-profile.page").then((m) => m.default),
+    component: UserProfilePage,
   },
 ]
 
@@ -13,4 +14,3 @@ const routes: Routes = [
   exports: [RouterModule],
 })
 export class UserProfilePageRoutingModule {}
-

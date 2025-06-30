@@ -1,17 +1,30 @@
 import { Injectable } from "@angular/core"
-import { BehaviorSubject, Observable, tap, catchError, throwError } from "rxjs"
-import type { HttpClient } from "@angular/common/http"
+import { HttpClient } from "@angular/common/http"
+import { Observable, BehaviorSubject } from "rxjs"
+import { tap } from "rxjs/operators"
 import { environment } from "../environments/environment"
 
 export interface User {
   id: number
   name: string
   email: string
-  role: "admin" | "user"
+  role?: string
   avatar?: string
   phone_number?: string
   address?: string
   dob?: string
+}
+
+export interface LoginCredentials {
+  email: string
+  password: string
+}
+
+export interface RegisterData {
+  name: string
+  email: string
+  password: string
+  password_confirmation: string
 }
 
 export interface LoginResponse {
@@ -20,158 +33,114 @@ export interface LoginResponse {
   user: User
 }
 
-export interface RegisterData {
-  name: string
-  email: string
-  password: string
-  password_confirmation: string
-  phone_number?: string
-  address?: string
-  dob?: string
-}
-
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
+  private apiUrl = environment.apiUrl
   private currentUserSubject = new BehaviorSubject<User | null>(null)
   public currentUser$ = this.currentUserSubject.asObservable()
-  private apiUrl = environment.apiUrl || "http://localhost:8000/api"
 
   constructor(private http: HttpClient) {
-    console.log("🔐 AuthService initialized")
-    // Check if user is already logged in
-    const savedUser = localStorage.getItem("currentUser")
-    const token = localStorage.getItem("auth_token")
+    this.loadStoredUser()
+  }
 
-    if (savedUser && token) {
-      const user = JSON.parse(savedUser)
-      this.currentUserSubject.next(user)
-      console.log("👤 Restored user session:", user.name, user.role)
+  private loadStoredUser() {
+    const token = localStorage.getItem("auth_token")
+    const user = localStorage.getItem("current_user")
+    if (token && user) {
+      this.currentUserSubject.next(JSON.parse(user))
     }
   }
 
-  register(userData: RegisterData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, userData).pipe(
-      tap((response: any) => {
-        console.log("✅ Registration successful")
-      }),
-      catchError((error) => {
-        console.log("❌ Registration failed:", error.error?.message || error.message)
-        return throwError(() => error)
+  login(credentials: LoginCredentials): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap((response) => {
+        localStorage.setItem("auth_token", response.access_token)
+        localStorage.setItem("current_user", JSON.stringify(response.user))
+        this.currentUserSubject.next(response.user)
       }),
     )
   }
 
-  login(email: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password }).pipe(
-      tap((response: LoginResponse) => {
-        // Store token and user data
-        localStorage.setItem("auth_token", response.access_token)
-        localStorage.setItem("currentUser", JSON.stringify(response.user))
-
-        this.currentUserSubject.next(response.user)
-        console.log("✅ Login successful:", response.user.name, response.user.role)
-      }),
-      catchError((error) => {
-        console.log("❌ Login failed:", error.error?.message || error.message)
-        return throwError(() => error)
-      }),
-    )
+  register(data: RegisterData): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, data)
   }
 
   logout(): Observable<any> {
     const token = localStorage.getItem("auth_token")
-
-    if (!token) {
-      this.clearSession()
-      return new Observable((observer) => {
-        observer.next({ message: "Already logged out" })
-        observer.complete()
-      })
-    }
-
     return this.http
       .post(
         `${this.apiUrl}/logout`,
         {},
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         },
       )
       .pipe(
         tap(() => {
-          console.log("👋 User logged out")
-          this.clearSession()
-        }),
-        catchError((error) => {
-          console.log("⚠️ Logout error, clearing session anyway")
-          this.clearSession()
-          return throwError(() => error)
+          localStorage.removeItem("auth_token")
+          localStorage.removeItem("current_user")
+          this.currentUserSubject.next(null)
         }),
       )
   }
 
   getProfile(): Observable<User> {
     const token = localStorage.getItem("auth_token")
-    return this.http
-      .get<User>(`${this.apiUrl}/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .pipe(
-        tap((user: User) => {
-          localStorage.setItem("currentUser", JSON.stringify(user))
-          this.currentUserSubject.next(user)
-        }),
-      )
+    return this.http.get<User>(`${this.apiUrl}/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    })
   }
 
-  updateProfile(userData: Partial<User>): Observable<User> {
+  updateProfile(data: Partial<User>): Observable<User> {
     const token = localStorage.getItem("auth_token")
     return this.http
-      .put<User>(`${this.apiUrl}/profile`, userData, {
-        headers: { Authorization: `Bearer ${token}` },
+      .put<User>(`${this.apiUrl}/profile`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       })
       .pipe(
-        tap((user: User) => {
-          localStorage.setItem("currentUser", JSON.stringify(user))
+        tap((user) => {
+          localStorage.setItem("current_user", JSON.stringify(user))
           this.currentUserSubject.next(user)
-          console.log("✅ Profile updated:", user.name)
         }),
       )
   }
 
-  private clearSession(): void {
-    localStorage.removeItem("currentUser")
-    localStorage.removeItem("auth_token")
-    this.currentUserSubject.next(null)
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem("auth_token")
   }
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value
   }
 
-  isLoggedIn(): boolean {
-    const loggedIn = this.currentUserSubject.value !== null && localStorage.getItem("auth_token") !== null
-    console.log("🔍 Checking login status:", loggedIn)
-    return loggedIn
-  }
-
   isAdmin(): boolean {
     const user = this.getCurrentUser()
-    const isAdmin = user?.role === "admin"
-    console.log("🛡️ Checking admin status:", isAdmin)
-    return isAdmin
+    return user?.role === "admin"
   }
 
   isUser(): boolean {
     const user = this.getCurrentUser()
-    const isUser = user?.role === "user"
-    console.log("👤 Checking user status:", isUser)
-    return isUser
+    return user?.role === "user" || !user?.role
   }
 
-  getToken(): string | null {
-    return localStorage.getItem("auth_token")
+  // Demo login methods for testing
+  loginAsAdmin(): Observable<LoginResponse> {
+    return this.login({ email: "admin@example.com", password: "password" })
+  }
+
+  loginAsUser(): Observable<LoginResponse> {
+    return this.login({ email: "user@example.com", password: "password" })
   }
 }
+

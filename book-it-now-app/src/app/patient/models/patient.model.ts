@@ -1,15 +1,23 @@
 export interface Patient {
   id?: number
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   email: string
   phone: string
-  dateOfBirth: string
+  date_of_birth: string
   address: string
-  emergencyContact: string
-  emergencyPhone: string
-  medicalHistory?: string
+  emergency_contact: string
+  emergency_phone: string
+  medical_history?: string
   allergies?: string
-  createdAt?: string
-  updatedAt?: string
+  created_at?: string
+  updated_at?: string
+}
+
+export interface PatientResponse {
+  data: Patient[]
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
 }

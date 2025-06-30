@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core"
-import type { Observable } from "rxjs"
-import type { Staff } from "../models/staff.model"
-import type { ApiService } from "../../services/api.service"
+import { Observable } from "rxjs"
+import { ApiService } from "../../services/api.service"
+import { Staff, StaffResponse, StaffSchedule } from "../models/staff.model"
 
 @Injectable({
   providedIn: "root",
@@ -9,19 +9,23 @@ import type { ApiService } from "../../services/api.service"
 export class StaffService {
   constructor(private apiService: ApiService) {}
 
-  getStaff(filters?: any): Observable<any> {
-    return this.apiService.get("staff", filters)
+  getStaff(page = 1, role?: string): Observable<StaffResponse> {
+    const params: any = { page }
+    if (role && role !== "all") {
+      params.role = role
+    }
+    return this.apiService.get<StaffResponse>("staff", params)
   }
 
   getStaffMember(id: number): Observable<Staff> {
     return this.apiService.get<Staff>(`staff/${id}`)
   }
 
-  createStaff(staff: Omit<Staff, "id">): Observable<Staff> {
+  createStaff(staff: Staff): Observable<Staff> {
     return this.apiService.post<Staff>("staff", staff)
   }
 
-  updateStaff(id: number, staff: Partial<Staff>): Observable<Staff> {
+  updateStaff(id: number, staff: Staff): Observable<Staff> {
     return this.apiService.put<Staff>(`staff/${id}`, staff)
   }
 
@@ -33,52 +37,20 @@ export class StaffService {
     return this.apiService.get<Staff[]>("staff/by-role", { role })
   }
 
+  getStaffSchedule(id: number, date: string): Observable<StaffSchedule[]> {
+    return this.apiService.get<StaffSchedule[]>(`staff/${id}/schedule`, { date })
+  }
+
+  updateStaffSchedule(id: number, schedule: StaffSchedule[]): Observable<any> {
+    return this.apiService.put(`staff/${id}/schedule`, { schedule })
+  }
+
   getAvailableStaff(date: string, time: string): Observable<Staff[]> {
     return this.apiService.get<Staff[]>("staff/available", { date, time })
-  }
-
-  getStaffSchedule(id: number, date?: string): Observable<any> {
-    const params: any = {}
-    if (date) params.date = date
-
-    return this.apiService.get(`staff/${id}/schedule`, params)
-  }
-
-  updateStaffSchedule(id: number, schedule: any): Observable<any> {
-    return this.apiService.put(`staff/${id}/schedule`, schedule)
-  }
-
-  getStaffAppointments(id: number, date?: string): Observable<any> {
-    const params: any = {}
-    if (date) params.date = date
-
-    return this.apiService.get(`staff/${id}/appointments`, params)
   }
 
   searchStaff(query: string): Observable<Staff[]> {
     return this.apiService.get<Staff[]>("staff/search", { q: query })
   }
-
-  getStaffWorkload(id: number, startDate: string, endDate: string): Observable<any> {
-    return this.apiService.get(`staff/${id}/workload`, {
-      start_date: startDate,
-      end_date: endDate,
-    })
-  }
-
-  updateStaffStatus(id: number, status: "active" | "inactive" | "on_leave"): Observable<Staff> {
-    return this.apiService.put<Staff>(`staff/${id}/status`, { status })
-  }
-
-  getDoctors(): Observable<Staff[]> {
-    return this.getStaffByRole("doctor")
-  }
-
-  getNurses(): Observable<Staff[]> {
-    return this.getStaffByRole("nurse")
-  }
-
-  getReceptionists(): Observable<Staff[]> {
-    return this.getStaffByRole("receptionist")
-  }
 }
+
