@@ -10,7 +10,7 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div *ngIf="currentUser">
+  @if (currentUser) {
     <ion-card>
       <ion-card-header>
         <ion-card-title>Welcome, {{ currentUser.name }}!</ion-card-title>
@@ -35,13 +35,15 @@
         </ion-card-content>
       </ion-card>
 
-      <ion-card button (click)="navigate('/staff')" *ngIf="isAdmin">
-        <ion-card-content class="menu-item">
-          <ion-icon name="medical" color="tertiary"></ion-icon>
-          <h3>Staff</h3>
-          <p>Staff management</p>
-        </ion-card-content>
-      </ion-card>
+      @if (isAdmin) {
+        <ion-card button (click)="navigate('/staff')">
+          <ion-card-content class="menu-item">
+            <ion-icon name="medical" color="tertiary"></ion-icon>
+            <h3>Staff</h3>
+            <p>Staff management</p>
+          </ion-card-content>
+        </ion-card>
+      }
 
       <ion-card button (click)="navigate('/queue')">
         <ion-card-content class="menu-item">
@@ -51,11 +53,11 @@
         </ion-card-content>
       </ion-card>
     </div>
-  </div>
-
-  <div *ngIf="!currentUser" class="ion-text-center">
-    <ion-button routerLink="/login" expand="block">
-      Please Login
-    </ion-button>
-  </div>
+  } @else {
+    <div class="ion-text-center">
+      <ion-button routerLink="/login" expand="block">
+        Please Login
+      </ion-button>
+    </div>
+  }
 </ion-content>

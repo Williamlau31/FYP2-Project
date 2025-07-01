@@ -1,13 +1,54 @@
 import { Component, type OnInit } from "@angular/core"
-import type { ModalController, AlertController, ToastController } from "@ionic/angular"
-import type { DataService } from "../shared/data.service"
-import type { Appointment } from "../shared/models"
+import { CommonModule } from "@angular/common"
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonButton,
+  IonIcon,
+  IonList,
+  IonItemSliding,
+  IonItem,
+  IonLabel,
+  IonChip,
+  IonItemOptions,
+  IonItemOption,
+  ModalController,
+  AlertController,
+  ToastController,
+} from "@ionic/angular/standalone"
+import { addIcons } from "ionicons"
+import { add, create, trash } from "ionicons/icons"
+import { DataService } from "../shared/data.service"
+import { Appointment } from "../shared/models"
 import { AppointmentModalComponent } from "./appointment-modal.component"
 
 @Component({
   selector: "app-appointments",
   templateUrl: "./appointments.page.html",
   styleUrls: ["./appointments.page.scss"],
+  standalone: true,
+  imports: [
+    CommonModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonButton,
+    IonIcon,
+    IonList,
+    IonItemSliding,
+    IonItem,
+    IonLabel,
+    IonChip,
+    IonItemOptions,
+    IonItemOption,
+  ],
 })
 export class AppointmentsPage implements OnInit {
   appointments: Appointment[] = []
@@ -17,7 +58,9 @@ export class AppointmentsPage implements OnInit {
     private modalController: ModalController,
     private alertController: AlertController,
     private toastController: ToastController,
-  ) {}
+  ) {
+    addIcons({ add, create, trash })
+  }
 
   ngOnInit() {
     this.dataService.getAppointments().subscribe((appointments) => {
@@ -32,8 +75,15 @@ export class AppointmentsPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.dataService.addAppointment(result.data)
-        this.showToast("Appointment added successfully")
+        this.dataService.addAppointment(result.data).subscribe({
+          next: () => {
+            this.showToast("Appointment added successfully")
+          },
+          error: (error) => {
+            console.error("Add appointment error:", error)
+            this.showToast("Failed to add appointment", "danger")
+          },
+        })
       }
     })
 
@@ -48,8 +98,15 @@ export class AppointmentsPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.dataService.updateAppointment(result.data)
-        this.showToast("Appointment updated successfully")
+        this.dataService.updateAppointment(result.data).subscribe({
+          next: () => {
+            this.showToast("Appointment updated successfully")
+          },
+          error: (error) => {
+            console.error("Update appointment error:", error)
+            this.showToast("Failed to update appointment", "danger")
+          },
+        })
       }
     })
 
@@ -65,8 +122,15 @@ export class AppointmentsPage implements OnInit {
         {
           text: "Delete",
           handler: () => {
-            this.dataService.deleteAppointment(id)
-            this.showToast("Appointment deleted successfully")
+            this.dataService.deleteAppointment(id).subscribe({
+              next: () => {
+                this.showToast("Appointment deleted successfully")
+              },
+              error: (error) => {
+                console.error("Delete appointment error:", error)
+                this.showToast("Failed to delete appointment", "danger")
+              },
+            })
           },
         },
       ],
@@ -87,11 +151,11 @@ export class AppointmentsPage implements OnInit {
     }
   }
 
-  async showToast(message: string) {
+  async showToast(message: string, color = "success") {
     const toast = await this.toastController.create({
       message,
       duration: 2000,
-      color: "success",
+      color,
     })
     toast.present()
   }

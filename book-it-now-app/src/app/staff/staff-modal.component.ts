@@ -1,10 +1,45 @@
 import { Component, type OnInit, Input } from "@angular/core"
-import type { ModalController } from "@ionic/angular"
-import type { Staff } from "../shared/models"
+import { CommonModule } from "@angular/common"
+import { FormsModule } from "@angular/forms"
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonSelect,
+  IonSelectOption,
+  ModalController,
+} from "@ionic/angular/standalone"
+import { addIcons } from "ionicons"
+import { close } from "ionicons/icons"
+import { Staff } from "../shared/models"
 
 @Component({
   selector: "app-staff-modal",
   templateUrl: "./staff-modal.component.html",
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonSelect,
+    IonSelectOption,
+  ],
 })
 export class StaffModalComponent implements OnInit {
   @Input() staff?: Staff
@@ -16,7 +51,9 @@ export class StaffModalComponent implements OnInit {
     department: "",
   }
 
-  constructor(private modalController: ModalController) {}
+  constructor(private modalController: ModalController) {
+    addIcons({ close })
+  }
 
   ngOnInit() {
     if (this.staff) {

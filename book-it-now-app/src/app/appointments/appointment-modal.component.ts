@@ -1,11 +1,48 @@
 import { Component, type OnInit, Input } from "@angular/core"
-import type { ModalController } from "@ionic/angular"
-import type { DataService } from "../shared/data.service"
-import type { Appointment, Patient, Staff } from "../shared/models"
+import { CommonModule } from "@angular/common"
+import { FormsModule } from "@angular/forms"
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonSelect,
+  IonSelectOption,
+  IonDatetime,
+  IonTextarea,
+  ModalController,
+} from "@ionic/angular/standalone"
+import { addIcons } from "ionicons"
+import { close } from "ionicons/icons"
+import { DataService } from "../shared/data.service"
+import { Appointment, Patient, Staff } from "../shared/models"
 
 @Component({
   selector: "app-appointment-modal",
   templateUrl: "./appointment-modal.component.html",
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonSelect,
+    IonSelectOption,
+    IonDatetime,
+    IonTextarea,
+  ],
 })
 export class AppointmentModalComponent implements OnInit {
   @Input() appointment?: Appointment
@@ -25,7 +62,9 @@ export class AppointmentModalComponent implements OnInit {
   constructor(
     private modalController: ModalController,
     private dataService: DataService,
-  ) {}
+  ) {
+    addIcons({ close })
+  }
 
   ngOnInit() {
     this.dataService.getPatients().subscribe((patients) => {

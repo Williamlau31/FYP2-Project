@@ -1,13 +1,52 @@
 import { Component, type OnInit } from "@angular/core"
-import type { ModalController, AlertController, ToastController } from "@ionic/angular"
-import type { DataService } from "../shared/data.service"
-import type { Patient } from "../shared/models"
+import { CommonModule } from "@angular/common"
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonButton,
+  IonIcon,
+  IonList,
+  IonItemSliding,
+  IonItem,
+  IonLabel,
+  IonItemOptions,
+  IonItemOption,
+  ModalController,
+  AlertController,
+  ToastController,
+} from "@ionic/angular/standalone"
+import { addIcons } from "ionicons"
+import { add, create, trash } from "ionicons/icons"
+import { DataService } from "../shared/data.service"
+import { Patient } from "../shared/models"
 import { PatientModalComponent } from "./patient-modal.component"
 
 @Component({
   selector: "app-patients",
   templateUrl: "./patients.page.html",
   styleUrls: ["./patients.page.scss"],
+  standalone: true,
+  imports: [
+    CommonModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonButton,
+    IonIcon,
+    IonList,
+    IonItemSliding,
+    IonItem,
+    IonLabel,
+    IonItemOptions,
+    IonItemOption,
+  ],
 })
 export class PatientsPage implements OnInit {
   patients: Patient[] = []
@@ -17,7 +56,9 @@ export class PatientsPage implements OnInit {
     private modalController: ModalController,
     private alertController: AlertController,
     private toastController: ToastController,
-  ) {}
+  ) {
+    addIcons({ add, create, trash })
+  }
 
   ngOnInit() {
     this.dataService.getPatients().subscribe((patients) => {
@@ -32,8 +73,15 @@ export class PatientsPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.dataService.addPatient(result.data)
-        this.showToast("Patient added successfully")
+        this.dataService.addPatient(result.data).subscribe({
+          next: () => {
+            this.showToast("Patient added successfully")
+          },
+          error: (error) => {
+            console.error("Add patient error:", error)
+            this.showToast("Failed to add patient", "danger")
+          },
+        })
       }
     })
 
@@ -48,8 +96,15 @@ export class PatientsPage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.dataService.updatePatient(result.data)
-        this.showToast("Patient updated successfully")
+        this.dataService.updatePatient(result.data).subscribe({
+          next: () => {
+            this.showToast("Patient updated successfully")
+          },
+          error: (error) => {
+            console.error("Update patient error:", error)
+            this.showToast("Failed to update patient", "danger")
+          },
+        })
       }
     })
 
@@ -65,8 +120,15 @@ export class PatientsPage implements OnInit {
         {
           text: "Delete",
           handler: () => {
-            this.dataService.deletePatient(id)
-            this.showToast("Patient deleted successfully")
+            this.dataService.deletePatient(id).subscribe({
+              next: () => {
+                this.showToast("Patient deleted successfully")
+              },
+              error: (error) => {
+                console.error("Delete patient error:", error)
+                this.showToast("Failed to delete patient", "danger")
+              },
+            })
           },
         },
       ],
@@ -74,11 +136,11 @@ export class PatientsPage implements OnInit {
     await alert.present()
   }
 
-  async showToast(message: string) {
+  async showToast(message: string, color = "success") {
     const toast = await this.toastController.create({
       message,
       duration: 2000,
-      color: "success",
+      color,
     })
     toast.present()
   }

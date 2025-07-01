@@ -1,13 +1,55 @@
 import { Component, type OnInit } from "@angular/core"
-import type { ModalController, AlertController, ToastController, ActionSheetController } from "@ionic/angular"
-import type { DataService } from "../shared/data.service"
-import type { QueueItem } from "../shared/models"
+import { CommonModule } from "@angular/common"
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonButton,
+  IonIcon,
+  IonList,
+  IonItemSliding,
+  IonItem,
+  IonLabel,
+  IonChip,
+  IonItemOptions,
+  IonItemOption,
+  ModalController,
+  AlertController,
+  ToastController,
+  ActionSheetController,
+} from "@ionic/angular/standalone"
+import { addIcons } from "ionicons"
+import { add, checkmark, trash } from "ionicons/icons"
+import { DataService } from "../shared/data.service"
+import { QueueItem } from "../shared/models"
 import { QueueModalComponent } from "./queue-modal.component"
 
 @Component({
   selector: "app-queue",
   templateUrl: "./queue.page.html",
   styleUrls: ["./queue.page.scss"],
+  standalone: true,
+  imports: [
+    CommonModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonButton,
+    IonIcon,
+    IonList,
+    IonItemSliding,
+    IonItem,
+    IonLabel,
+    IonChip,
+    IonItemOptions,
+    IonItemOption,
+  ],
 })
 export class QueuePage implements OnInit {
   queue: QueueItem[] = []
@@ -18,7 +60,9 @@ export class QueuePage implements OnInit {
     private alertController: AlertController,
     private toastController: ToastController,
     private actionSheetController: ActionSheetController,
-  ) {}
+  ) {
+    addIcons({ add, checkmark, trash })
+  }
 
   ngOnInit() {
     this.dataService.getQueue().subscribe((queue) => {
@@ -33,8 +77,19 @@ export class QueuePage implements OnInit {
 
     modal.onDidDismiss().then((result) => {
       if (result.data) {
-        this.dataService.addToQueue(result.data)
-        this.showToast("Patient added to queue successfully")
+        this.dataService.addToQueue(result.data).subscribe({
+          next: () => {
+            this.showToast("Patient added to queue successfully")
+          },
+          error: (error) => {
+            console.error("Add to queue error:", error)
+            if (error.status === 422) {
+              this.showToast("Patient is already in the queue", "warning")
+            } else {
+              this.showToast("Failed to add patient to queue", "danger")
+            }
+          },
+        })
       }
     })
 
@@ -48,17 +103,31 @@ export class QueuePage implements OnInit {
         {
           text: "Called",
           handler: () => {
-            item.status = "called"
-            this.dataService.updateQueueItem(item)
-            this.showToast("Status updated to Called")
+            const updatedItem = { ...item, status: "called" as const }
+            this.dataService.updateQueueItem(updatedItem).subscribe({
+              next: () => {
+                this.showToast("Status updated to Called")
+              },
+              error: (error) => {
+                console.error("Update queue status error:", error)
+                this.showToast("Failed to update status", "danger")
+              },
+            })
           },
         },
         {
           text: "Completed",
           handler: () => {
-            item.status = "completed"
-            this.dataService.updateQueueItem(item)
-            this.showToast("Status updated to Completed")
+            const updatedItem = { ...item, status: "completed" as const }
+            this.dataService.updateQueueItem(updatedItem).subscribe({
+              next: () => {
+                this.showToast("Status updated to Completed")
+              },
+              error: (error) => {
+                console.error("Update queue status error:", error)
+                this.showToast("Failed to update status", "danger")
+              },
+            })
           },
         },
         {
@@ -79,8 +148,15 @@ export class QueuePage implements OnInit {
         {
           text: "Remove",
           handler: () => {
-            this.dataService.removeFromQueue(id)
-            this.showToast("Patient removed from queue")
+            this.dataService.removeFromQueue(id).subscribe({
+              next: () => {
+                this.showToast("Patient removed from queue")
+              },
+              error: (error) => {
+                console.error("Remove from queue error:", error)
+                this.showToast("Failed to remove patient from queue", "danger")
+              },
+            })
           },
         },
       ],
@@ -101,11 +177,11 @@ export class QueuePage implements OnInit {
     }
   }
 
-  async showToast(message: string) {
+  async showToast(message: string, color = "success") {
     const toast = await this.toastController.create({
       message,
       duration: 2000,
-      color: "success",
+      color,
     })
     toast.present()
   }

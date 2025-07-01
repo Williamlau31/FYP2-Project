@@ -1,10 +1,43 @@
 import { Component, type OnInit, Input } from "@angular/core"
-import type { ModalController } from "@ionic/angular"
-import type { Patient } from "../shared/models"
+import { CommonModule } from "@angular/common"
+import { FormsModule } from "@angular/forms"
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonButton,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonInput,
+  IonTextarea,
+  ModalController,
+} from "@ionic/angular/standalone"
+import { addIcons } from "ionicons"
+import { close } from "ionicons/icons"
+import { Patient } from "../shared/models"
 
 @Component({
   selector: "app-patient-modal",
   templateUrl: "./patient-modal.component.html",
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonIcon,
+    IonItem,
+    IonLabel,
+    IonInput,
+    IonTextarea,
+  ],
 })
 export class PatientModalComponent implements OnInit {
   @Input() patient?: Patient
@@ -16,7 +49,9 @@ export class PatientModalComponent implements OnInit {
     address: "",
   }
 
-  constructor(private modalController: ModalController) {}
+  constructor(private modalController: ModalController) {
+    addIcons({ close })
+  }
 
   ngOnInit() {
     if (this.patient) {
