@@ -1,45 +1,106 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login - BookItNow</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content class="ion-padding">
-  <div class="login-container">
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>Welcome Back</ion-card-title>
-        <ion-card-subtitle>Please sign in to continue</ion-card-subtitle>
-      </ion-card-header>
-      
-      <ion-card-content>
-        <form (ngSubmit)="onLogin()">
-          <ion-item>
-            <ion-label position="floating">Email</ion-label>
-            <ion-input type="email" [(ngModel)]="email" name="email" required [disabled]="isLoading"></ion-input>
-          </ion-item>
-          
-          <ion-item>
-            <ion-label position="floating">Password</ion-label>
-            <ion-input type="password" [(ngModel)]="password" name="password" required [disabled]="isLoading"></ion-input>
-          </ion-item>
-          
-          <ion-button expand="full" type="submit" class="ion-margin-top" [disabled]="isLoading">
-            @if (isLoading) {
-              <ion-spinner name="crescent"></ion-spinner>
-              <span>Logging in...</span>
-            } @else {
-              <span>Login</span>
-            }
-          </ion-button>
-        </form>
-        
-        <div class="demo-credentials">
-          <h4>Demo Credentials:</h4>
-          <p><strong>Admin:</strong> admin@test.com / admin</p>
-          <p><strong>User:</strong> user@test.com / user</p>
+<ion-content class="login-content">
+  <div class="login-background">
+    <div class="login-container">
+      <!-- Logo Section -->
+      <div class="logo-section">
+        <div class="logo-circle">
+          <ion-icon name="medical" class="logo-icon"></ion-icon>
         </div>
-      </ion-card-content>
-    </ion-card>
+        <h1 class="app-title">BookItNow</h1>
+        <p class="app-subtitle">Healthcare Management System</p>
+      </div>
+
+      <!-- Login Card -->
+      <ion-card class="login-card">
+        <ion-card-header class="login-header">
+          <ion-card-title class="login-title">Welcome Back</ion-card-title>
+          <ion-card-subtitle class="login-subtitle">Please sign in to continue</ion-card-subtitle>
+        </ion-card-header>
+        
+        <ion-card-content class="login-form-content">
+          <form (ngSubmit)="onLogin()" class="login-form">
+            <div class="input-group">
+              <ion-item class="custom-input" lines="none">
+                <ion-icon name="mail" slot="start" class="input-icon"></ion-icon>
+                <ion-label position="floating">Email Address</ion-label>
+                <ion-input 
+                  type="email" 
+                  [(ngModel)]="email" 
+                  name="email" 
+                  required 
+                  [disabled]="isLoading"
+                  class="custom-input-field">
+                </ion-input>
+              </ion-item>
+            </div>
+            
+            <div class="input-group">
+              <ion-item class="custom-input" lines="none">
+                <ion-icon name="lock-closed" slot="start" class="input-icon"></ion-icon>
+                <ion-label position="floating">Password</ion-label>
+                <ion-input 
+                  type="password" 
+                  [(ngModel)]="password" 
+                  name="password" 
+                  required 
+                  [disabled]="isLoading"
+                  class="custom-input-field">
+                </ion-input>
+              </ion-item>
+            </div>
+            
+            <ion-button 
+              expand="block" 
+              type="submit" 
+              class="login-button" 
+              [disabled]="isLoading"
+              size="large">
+              @if (isLoading) {
+                <ion-spinner name="crescent" class="login-spinner"></ion-spinner>
+                <span class="login-text">Signing In...</span>
+              } @else {
+                <ion-icon name="log-in" slot="start"></ion-icon>
+                <span class="login-text">Sign In</span>
+              }
+            </ion-button>
+          </form>
+          
+          <!-- Demo Credentials -->
+          <div class="demo-section">
+            <div class="demo-header">
+              <ion-icon name="information-circle" class="demo-icon"></ion-icon>
+              <h4 class="demo-title">Demo Credentials</h4>
+            </div>
+            <div class="demo-credentials">
+              <div class="credential-item">
+                <ion-chip color="primary" class="role-chip">
+                  <ion-icon name="shield-checkmark"></ion-icon>
+                  <ion-label>Admin</ion-label>
+                </ion-chip>
+                <div class="credential-details">
+                  <p><strong>Email:</strong> admin@test.com</p>
+                  <p><strong>Password:</strong> admin</p>
+                </div>
+              </div>
+              <div class="credential-item">
+                <ion-chip color="secondary" class="role-chip">
+                  <ion-icon name="person"></ion-icon>
+                  <ion-label>User</ion-label>
+                </ion-chip>
+                <div class="credential-details">
+                  <p><strong>Email:</strong> user@test.com</p>
+                  <p><strong>Password:</strong> user</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+
+      <!-- Footer -->
+      <div class="login-footer">
+        <p>&copy; 2024 BookItNow. All rights reserved.</p>
+      </div>
+    </div>
   </div>
 </ion-content>

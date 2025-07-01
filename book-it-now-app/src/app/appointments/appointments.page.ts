@@ -21,7 +21,7 @@ import {
   ToastController,
 } from "@ionic/angular/standalone"
 import { addIcons } from "ionicons"
-import { add, create, trash } from "ionicons/icons"
+import { add, create, trash, calendar, calendarOutline, checkmarkCircle, closeCircle, today, time, person, medical, documentText } from "ionicons/icons"
 import { DataService } from "../shared/data.service"
 import { Appointment } from "../shared/models"
 import { AppointmentModalComponent } from "./appointment-modal.component"
@@ -59,7 +59,7 @@ export class AppointmentsPage implements OnInit {
     private alertController: AlertController,
     private toastController: ToastController,
   ) {
-    addIcons({ add, create, trash })
+    addIcons({calendar,add,calendarOutline,checkmarkCircle,closeCircle,today,time,person,medical,documentText,create,trash});
   }
 
   ngOnInit() {

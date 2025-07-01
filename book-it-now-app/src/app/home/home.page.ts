@@ -16,7 +16,7 @@ import {
   IonCardContent,
 } from "@ionic/angular/standalone"
 import { addIcons } from "ionicons"
-import { logOutOutline, calendar, people, medical, time } from "ionicons/icons"
+import { logOutOutline, calendar, people, medical, time, personCircle, analytics, apps, chevronForward, pulse, checkmarkCircle, personAdd, lockClosed, logIn } from "ionicons/icons"
 import { AuthService } from "../shared/auth.service"
 import { DataService } from "../shared/data.service"
 
@@ -49,7 +49,7 @@ export class HomePage implements OnInit {
     private router: Router,
     private dataService: DataService,
   ) {
-    addIcons({ logOutOutline, calendar, people, medical, time })
+    addIcons({medical,logOutOutline,personCircle,analytics,calendar,people,time,apps,chevronForward,pulse,checkmarkCircle,personAdd,lockClosed,logIn});
   }
 
   ngOnInit() {
