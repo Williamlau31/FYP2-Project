@@ -9,5 +9,3 @@ import { HomePageRoutingModule } from "./home-routing.module"
   declarations: [],
 })
 export class HomePageModule {}
-
-

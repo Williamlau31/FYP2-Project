@@ -1,0 +1,41 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Staff</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="openAddModal()">
+        <ion-icon name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item-sliding *ngFor="let member of staff">
+      <ion-item>
+        <ion-label>
+          <h2>{{ member.name }}</h2>
+          <p>{{ member.role }} - {{ member.department }}</p>
+          <p>{{ member.email }}</p>
+        </ion-label>
+      </ion-item>
+      
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="editStaff(member)">
+          <ion-icon name="create"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="deleteStaff(member.id!)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <div *ngIf="staff.length === 0" class="ion-text-center ion-padding">
+    <p>No staff members found</p>
+    <ion-button (click)="openAddModal()">Add First Staff Member</ion-button>
+  </div>
+</ion-content>

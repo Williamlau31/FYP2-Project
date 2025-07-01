@@ -1,5 +1,6 @@
 import { Component, type OnInit } from "@angular/core"
-import type { AuthService, User } from "../auth.service"
+import type { Router } from "@angular/router"
+import type { AuthService } from "../shared/auth.service"
 
 @Component({
   selector: "app-home",
@@ -7,9 +8,12 @@ import type { AuthService, User } from "../auth.service"
   styleUrls: ["./home.page.scss"],
 })
 export class HomePage implements OnInit {
-  currentUser: User | null = null
+  currentUser: any = null
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
 
   ngOnInit() {
     this.authService.currentUser$.subscribe((user) => {
@@ -21,8 +25,13 @@ export class HomePage implements OnInit {
     return this.authService.isAdmin()
   }
 
-  get isUser() {
-    return this.authService.isUser()
+  navigate(path: string) {
+    this.router.navigate([path])
+  }
+
+  logout() {
+    this.authService.logout()
+    this.router.navigate(["/login"])
   }
 }
 
