@@ -87,3 +87,4 @@ class DashboardController extends Controller
         return $activities->sortByDesc('time')->take(5);
     }
 }
+

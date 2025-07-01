@@ -1,16 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+    public function showLogin()
+    {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+        return view('auth.login');
+    }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -18,34 +25,53 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $credentials = $request->only('email', 'password');
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+        if (Auth::attempt($credentials, $request->filled('remember'))) {
+            $request->session()->regenerate();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful!',
+                'redirect' => route('dashboard')
             ]);
         }
 
-        $token = $user->createToken('auth-token')->plainTextToken;
-
         return response()->json([
-            'user' => $user,
-            'token' => $token,
-            'message' => 'Login successful'
-        ]);
+            'success' => false,
+            'message' => 'Invalid credentials. Please try again.'
+        ], 401);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return response()->json([
-            'message' => 'Logged out successfully'
-        ]);
+        return redirect()->route('login')->with('success', 'You have been logged out successfully.');
     }
 
-    public function user(Request $request)
+    public function register(Request $request)
     {
-        return response()->json($request->user());
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|in:admin,user',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User registered successfully!',
+            'user' => $user
+        ]);
     }
 }

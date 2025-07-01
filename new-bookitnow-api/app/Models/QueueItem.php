@@ -15,26 +15,28 @@ class QueueItem extends Model
         'status',
     ];
 
-    protected $appends = ['patient_name'];
-
     public function patient()
     {
         return $this->belongsTo(Patient::class);
     }
 
-    public function getPatientNameAttribute()
+    public function getStatusColorAttribute()
     {
-        return $this->patient?->name;
+        return match($this->status) {
+            'waiting' => 'warning',
+            'called' => 'primary',
+            'completed' => 'success',
+            default => 'secondary'
+        };
     }
 
-    protected static function boot()
+    public function getStatusIconAttribute()
     {
-        parent::boot();
-
-        static::creating(function ($queueItem) {
-            if (!$queueItem->queue_number) {
-                $queueItem->queue_number = static::max('queue_number') + 1;
-            }
-        });
+        return match($this->status) {
+            'waiting' => 'hourglass-split',
+            'called' => 'megaphone',
+            'completed' => 'check-circle',
+            default => 'clock'
+        };
     }
 }

@@ -12,8 +12,19 @@ class Staff extends Model
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'role',
         'department',
+        'specialization',
+        'license_number',
+        'hire_date',
+        'salary',
+        'address',
+    ];
+
+    protected $casts = [
+        'hire_date' => 'date',
+        'salary' => 'decimal:2',
     ];
 
     public function appointments()

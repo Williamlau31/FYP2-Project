@@ -1,30 +1,45 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\PatientController;
-use App\Http\Controllers\Api\StaffController;
-use App\Http\Controllers\Api\AppointmentController;
-use App\Http\Controllers\Api\QueueController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PatientController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\QueueController;
+use App\Http\Controllers\AuthController;
 
-// Public routes
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+// Public API routes
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
 
-// Protected routes
+// Protected API routes
 Route::middleware('auth:sanctum')->group(function () {
-    // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/user', [AuthController::class, 'user']);
     
-    // Patient routes
+    // Patients API
     Route::apiResource('patients', PatientController::class);
+    Route::get('/patients/search/{query}', [PatientController::class, 'search']);
     
-    // Staff routes (admin only)
+    // Appointments API
+    Route::apiResource('appointments', AppointmentController::class);
+    Route::patch('/appointments/{appointment}/status', [AppointmentController::class, 'updateStatus']);
+    
+    // Staff API
     Route::apiResource('staff', StaffController::class);
     
-    // Appointment routes
-    Route::apiResource('appointments', AppointmentController::class);
-    
-    // Queue routes
-    Route::apiResource('queue', QueueController::class);
+    // Queue API
+    Route::apiResource('queue', QueueController::class)->except(['show']);
+    Route::post('/queue/{queueItem}/status', [QueueController::class, 'updateStatus']);
+    Route::post('/queue/call-next', [QueueController::class, 'callNext']);
+    Route::post('/queue/reset', [QueueController::class, 'reset']);
 });

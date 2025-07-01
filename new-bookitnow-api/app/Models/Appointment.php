@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Appointment extends Model
 {
@@ -16,14 +17,13 @@ class Appointment extends Model
         'time',
         'status',
         'notes',
+        'appointment_type',
     ];
 
     protected $casts = [
         'date' => 'date',
-        'time' => 'datetime:H:i',
+        'time' => 'datetime',
     ];
-
-    protected $appends = ['patient_name', 'staff_name'];
 
     public function patient()
     {
@@ -35,13 +35,33 @@ class Appointment extends Model
         return $this->belongsTo(Staff::class);
     }
 
-    public function getPatientNameAttribute()
+    public function getFormattedDateAttribute()
     {
-        return $this->patient?->name;
+        return $this->date->format('M j, Y');
     }
 
-    public function getStaffNameAttribute()
+    public function getFormattedTimeAttribute()
     {
-        return $this->staff?->name;
+        return Carbon::parse($this->time)->format('g:i A');
+    }
+
+    public function getStatusColorAttribute()
+    {
+        return match($this->status) {
+            'scheduled' => 'primary',
+            'completed' => 'success',
+            'cancelled' => 'danger',
+            default => 'secondary'
+        };
+    }
+
+    public function getStatusIconAttribute()
+    {
+        return match($this->status) {
+            'scheduled' => 'calendar-check',
+            'completed' => 'check-circle',
+            'cancelled' => 'x-circle',
+            default => 'calendar'
+        };
     }
 }
