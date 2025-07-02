@@ -22,7 +22,10 @@ Route::get('/', function () {
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-Route::post('/register', [AuthController::class, 'register'])->name('register');
+
+// Add the GET route for displaying the registration form
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register.form'); // Give it a different name to avoid conflict with the POST route's 'register' name if you plan to use it this way
+Route::post('/register', [AuthController::class, 'register'])->name('register'); // This is your existing POST route
 
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
