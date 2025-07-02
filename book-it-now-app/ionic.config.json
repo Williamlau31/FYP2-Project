@@ -1,7 +1,0 @@
-{
-  "name": "book-it-now-app",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
