@@ -13,11 +13,12 @@ class DatabaseSeeder extends Seeder
     {
         // Call specific seeders in order of dependency
         $this->call([
-            UserSeeder::class,      // Create users (including admin and test patient user)
-            PatientSeeder::class,   // Create patients (including one for the test patient user)
-            StaffSeeder::class,     // Create staff
-            AppointmentSeeder::class, // Create appointments (depends on patients and staff)
-            QueueItemSeeder::class,   // Create queue items (depends on patients)
+            UserSeeder::class,
+            PatientSeeder::class,
+            StaffSeeder::class,
+            AppointmentSeeder::class,
+            QueueItemSeeder::class,
+            PaymentSeeder::class,
         ]);
     }
 }

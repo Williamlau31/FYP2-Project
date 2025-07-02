@@ -12,6 +12,7 @@
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -41,7 +42,9 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-100 antialiased">
+
     <div class="min-h-screen flex flex-col">
+
         <!-- Navigation Bar -->
         <nav class="bg-white shadow-md py-4">
             <div class="container mx-auto px-4 flex justify-between items-center">
@@ -52,6 +55,8 @@
                         <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">
                             <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
                         </a>
+
+                        {{-- Admin specific links --}}
                         @if(Auth::user()->isAdmin())
                             <a href="{{ route('patients.index') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">
                                 <i class="fas fa-users mr-1"></i> Patients
@@ -60,15 +65,26 @@
                                 <i class="fas fa-user-md mr-1"></i> Staff
                             </a>
                         @endif
-                        <a href="{{ route('appointments.index') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">
-                            <i class="fas fa-calendar-check mr-1"></i> Appointments
-                        </a>
-                        <a href="{{ route('queue.index') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">
-                            <i class="fas fa-list-ol mr-1"></i> Queue
-                        </a>
-                        <a href="{{ route('payments.index') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">
-                            <i class="fas fa-credit-card mr-1"></i> Payments
-                        </a>
+
+                        {{-- Staff specific links (also visible to Admin) --}}
+                        @if(Auth::user()->isStaff())
+                            <a href="{{ route('appointments.index') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">
+                                <i class="fas fa-calendar-check mr-1"></i> Appointments
+                            </a>
+                            <a href="{{ route('queue.index') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">
+                                <i class="fas fa-list-ol mr-1"></i> Queue
+                            </a>
+                            {{-- Payments link might be for staff/admin only, assuming here it is --}}
+                            <a href="{{ route('payments.index') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">
+                                <i class="fas fa-credit-card mr-1"></i> Payments
+                            </a>
+                        @endif
+
+                        {{-- Patient specific links (if different from general appointments/queue) --}}
+                        {{-- Currently, appointments.index and queue.index are shared but display differently.
+                             If you have patient-specific pages, add them here.
+                             Example: <a href="{{ route('patient.profile') }}" class="text-gray-700 hover:text-blue-600 transition duration-300">Profile</a>
+                        --}}
 
                         <div class="relative" x-data="{ open: false }">
                             <button @click="open = !open" class="flex items-center text-gray-700 hover:text-blue-600 focus:outline-none transition duration-300">
@@ -100,7 +116,9 @@
                     <strong class="font-bold">Success!</strong>
                     <span class="block sm:inline">{{ session('success') }}</span>
                     <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-                        <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none';">
+                        <svg class="fill-current h-6 w-6 text-green-500" role="button"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            onclick="this.parentElement.parentElement.style.display='none';">
                             <title>Close</title>
                             <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697L11.819 10l3.029 2.651a1.2 1.2 0 0 1 0 1.698z"/>
                         </svg>
@@ -113,7 +131,9 @@
                     <strong class="font-bold">Error!</strong>
                     <span class="block sm:inline">{{ session('error') }}</span>
                     <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
-                        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" onclick="this.parentElement.parentElement.style.display='none';">
+                        <svg class="fill-current h-6 w-6 text-red-500" role="button"
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                            onclick="this.parentElement.parentElement.style.display='none';">
                             <title>Close</title>
                             <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697L11.819 10l3.029 2.651a1.2 1.2 0 0 1 0 1.698z"/>
                         </svg>

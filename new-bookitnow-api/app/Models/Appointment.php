@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
+use Carbon\Carbon; // Make sure Carbon is imported
 
 class Appointment extends Model
 {
@@ -15,16 +15,17 @@ class Appointment extends Model
         'staff_id',
         'date',
         'time',
+        'appointment_type',
         'status',
         'notes',
-        'appointment_type',
     ];
 
     protected $casts = [
         'date' => 'date',
-        'time' => 'datetime',
+        'time' => 'datetime', // Cast time to datetime for easier manipulation
     ];
 
+    // Relationships
     public function patient()
     {
         return $this->belongsTo(Patient::class);
@@ -35,6 +36,12 @@ class Appointment extends Model
         return $this->belongsTo(Staff::class);
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    // Accessors
     public function getFormattedDateAttribute()
     {
         return $this->date->format('M j, Y');
@@ -42,26 +49,13 @@ class Appointment extends Model
 
     public function getFormattedTimeAttribute()
     {
-        return Carbon::parse($this->time)->format('g:i A');
+        // Assuming time is stored as a full datetime, extract just the time
+        return Carbon::parse($this->time)->format('h:i A');
     }
 
-    public function getStatusColorAttribute()
+    // New accessor to check if the appointment has been paid
+    public function isPaid(): bool
     {
-        return match($this->status) {
-            'scheduled' => 'primary',
-            'completed' => 'success',
-            'cancelled' => 'danger',
-            default => 'secondary'
-        };
-    }
-
-    public function getStatusIconAttribute()
-    {
-        return match($this->status) {
-            'scheduled' => 'calendar-check',
-            'completed' => 'check-circle',
-            'cancelled' => 'x-circle',
-            default => 'calendar'
-        };
+        return $this->payments()->exists();
     }
 }

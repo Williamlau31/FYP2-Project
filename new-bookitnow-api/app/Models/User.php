@@ -16,7 +16,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role',
+        'role', // Make sure 'role' is fillable
     ];
 
     protected $hidden = [
@@ -29,13 +29,48 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    // Define the relationship with appointments as a patient
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'patient_id', 'id');
+    }
+
+    // If a user can also be a staff member and have appointments assigned to them
+    public function staffAppointments()
+    {
+        return $this->hasMany(Appointment::class, 'staff_id', 'id');
+    }
+
+    // Define relationship to Patient model if a User *is* a Patient
+    public function patient()
+    {
+        return $this->hasOne(Patient::class, 'email', 'email'); // Assuming email is unique and links User to Patient
+    }
+
+    // Define relationship to Staff model if a User *is* a Staff
+    public function staffMember()
+    {
+        return $this->hasOne(Staff::class, 'email', 'email'); // Assuming email is unique and links User to Staff
+    }
+
+
+    // Role-checking methods
     public function isAdmin()
     {
         return $this->role === 'admin';
     }
 
-    public function isUser()
+    public function isPatient()
     {
-        return $this->role === 'user';
+        // A user is a patient if their role is 'patient'
+        return $this->role === 'patient';
+    }
+
+    public function isStaff()
+    {
+        // A user is staff if their role is 'staff' or 'admin' (if admin also performs staff duties)
+        // For BookItNow, 'admin' seems to encompass staff duties.
+        // If 'staff' is a distinct role, you might want: return $this->role === 'staff';
+        return $this->role === 'staff' || $this->role === 'admin';
     }
 }

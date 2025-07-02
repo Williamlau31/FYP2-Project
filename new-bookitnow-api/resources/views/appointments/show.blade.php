@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
+
     <h1 class="text-4xl font-bold text-gray-800 mb-8">Appointment Details</h1>
 
     <div class="bg-white rounded-lg shadow-xl p-8 mb-8">
@@ -45,19 +46,25 @@
     </div>
 
     <div class="flex justify-start space-x-4">
-        <a href="{{ route('appointments.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+        <a href="{{ route('appointments.index') }}" class="bg-gray-500 hover:bg-gray-600 text-white
+            font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
             <i class="fas fa-arrow-left mr-2"></i> Back to Appointments
         </a>
-        @if(Auth::user()->isAdmin() || (Auth::user()->isUser() && $appointment->status == 'scheduled'))
-            <a href="{{ route('appointments.edit', $appointment->id) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+
+        {{-- Only Admin and Staff can edit/delete appointments --}}
+        @if(Auth::user()->isAdmin() || Auth::user()->isStaff())
+            <a href="{{ route('appointments.edit', $appointment->id) }}" class="bg-yellow-500
+                hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration
+                300">
                 <i class="fas fa-edit mr-2"></i> Edit Appointment
             </a>
-        @endif
-        @if(Auth::user()->isAdmin())
-            <form action="{{ route('appointments.destroy', $appointment->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this appointment?');" class="inline-block">
+            <form action="{{ route('appointments.destroy', $appointment->id) }}" method="POST"
+                onsubmit="return confirm('Are you sure you want to delete this appointment?');" class="inline-
+                block">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300">
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-
+                    4 rounded-lg shadow-md transition duration-300">
                     <i class="fas fa-trash-alt mr-2"></i> Delete Appointment
                 </button>
             </form>
