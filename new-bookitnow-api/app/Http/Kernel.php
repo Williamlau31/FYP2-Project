@@ -3,6 +3,15 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+// Add these use statements for the middleware that Intelephense is complaining about
+use Illuminate\Http\Middleware\TrustProxies;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
+use Illuminate\Foundation\Http\Middleware\TrimStrings;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Auth\Middleware\RedirectIfAuthenticated;
+
 
 class Kernel extends HttpKernel
 {
@@ -14,11 +23,11 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-        // \App\Http\Middleware\TrustHosts::class,
-        //\App\Http\Middleware\TrustProxies::class,
-        //\Illuminate\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        // \App\Http\Middleware\TrustHosts::class, // Keep this commented if not needed
+        TrustProxies::class, // Corrected namespace
+        PreventRequestsDuringMaintenance::class, // Corrected namespace
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        //\App\Http\Middleware\TrimStrings::class,
+        TrimStrings::class, // Corrected namespace
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
@@ -29,11 +38,11 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            //\App\Http\Middleware\EncryptCookies::class,
+            EncryptCookies::class, // Corrected namespace
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            //\App\Http\Middleware\VerifyCsrfToken::class,
+            VerifyCsrfToken::class, // Corrected namespace
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
@@ -54,15 +63,16 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        //'auth' => \App\Http\Middleware\Authenticate::class,
+        'auth' => Authenticate::class, // Corrected namespace
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        //'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'guest' => RedirectIfAuthenticated::class, // Corrected namespace
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'admin' => \App\Http\Middleware\AdminMiddleware::class, // Your custom middleware, this one is correct
     ];
 
     /**
@@ -75,7 +85,7 @@ class Kernel extends HttpKernel
     protected $middlewarePriority = [
         \Illuminate\Session\Middleware\StartSession::class,
         \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-        \Illuminate\Auth\Middleware\Authenticate::class,
+        Authenticate::class, // Corrected namespace
         \Illuminate\Session\Middleware\AuthenticateSession::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
